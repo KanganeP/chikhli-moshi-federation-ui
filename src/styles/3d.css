@@ -1,0 +1,73 @@
+/* ---------- Global 3D toolkit ---------- */
+html { scroll-behavior: smooth; }
+img, svg { max-width: 100%; }
+
+/* Tilt card (driven by Card3D.jsx via CSS variables) */
+.tilt {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s;
+  will-change: transform;
+}
+.tilt:hover { box-shadow: 0 30px 60px rgba(20, 39, 102, .22), 0 8px 18px rgba(20, 39, 102, .12) !important; }
+.tilt::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, .45), transparent 60%);
+  opacity: 0; transition: opacity .25s;
+}
+.tilt:hover::after { opacity: 1; }
+.pop { transform: translateZ(34px); }
+.pop-sm { transform: translateZ(18px); }
+
+/* Flip card */
+.flip { perspective: 1100px; }
+.flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2, .8, .2, 1); }
+.flip.is-flipped .flip-inner { transform: rotateY(180deg); }
+@media (hover: hover) and (pointer: fine) { .flip:hover .flip-inner { transform: rotateY(180deg); } }
+.flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 20px; overflow: hidden; }
+.flip-back { transform: rotateY(180deg); }
+
+/* City scene */
+.city { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-style: preserve-3d; transform: rotateX(-26deg) rotateY(-35deg); }
+.spin-city { animation: spinCity 38s linear infinite; }
+.block { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; }
+.face { position: absolute; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.ground {
+  position: absolute; left: 50%; top: 50%; border-radius: 28px;
+  background:
+    linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, .55) 47% 53%, transparent 53%),
+    linear-gradient(0deg, transparent 47%, rgba(255, 255, 255, .55) 47% 53%, transparent 53%),
+    linear-gradient(135deg, #cfd9ff, #9fb2f5);
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, .35), 0 0 0 11px rgba(255, 255, 255, .6);
+}
+.plate-edge { position: absolute; left: 50%; top: 50%; background: linear-gradient(#5c72c8, #2a3f94); }
+
+/* Cube */
+.cube { position: relative; transform-style: preserve-3d; animation: spinCube 14s linear infinite; transform: rotateX(-25deg) rotateY(25deg); }
+.cube > div { position: absolute; inset: 0; border-radius: 10px; backface-visibility: visible; display: grid; place-items: center; color: #fff; }
+
+/* Floating decor */
+.float-shape { position: absolute; pointer-events: none; animation: floaty var(--dur, 9s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+
+/* Ticker */
+.ticker-track { display: inline-flex; white-space: nowrap; animation: marquee 40s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+
+/* Ads */
+.ad-frame { position: relative; border-radius: 16px; overflow: hidden; background: linear-gradient(180deg, #fff, #f3f5ff); box-shadow: inset 0 0 0 1px rgba(31, 58, 147, .10), 0 8px 22px rgba(20, 39, 102, .08); }
+.ad-frame ins.adsbygoogle { min-height: inherit; }
+
+@keyframes spinCity { from { transform: rotateX(-26deg) rotateY(-35deg); } to { transform: rotateX(-26deg) rotateY(325deg); } }
+@keyframes spinCube { from { transform: rotateX(-25deg) rotateY(0deg); } to { transform: rotateX(-25deg) rotateY(360deg); } }
+@keyframes floaty { 0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--r, 0deg)); } 50% { transform: translate3d(0, -20px, 0) rotate(calc(var(--r, 0deg) + 8deg)); } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(26px) scale(.98); } to { opacity: 1; transform: none; } }
+.rise { animation: riseIn .7s cubic-bezier(.2, .8, .2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .spin-city, .cube, .float-shape, .ticker-track, .rise { animation: none !important; }
+  .tilt, .flip-inner { transition: none; }
+}
